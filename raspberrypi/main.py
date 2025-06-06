@@ -4,7 +4,7 @@ import time
 import asyncio
 
 # import functions from libs
-from bluetooth_module.bluetooth import button_press_action, discover_devices, select_and_connect_device
+from bluetooth_module.bluetooth import button_press_action, discover_devices, select_and_connect_device, get_patient_data
 
 # pin config
 BLUETOOTH_BUTTON_PIN = 17	# corresponds to physical pin 11
@@ -32,12 +32,15 @@ def main():
                 devices = asyncio.run(discover_devices())
 
                 # select device and pair 
-                asyncio.run(select_and_connect_device(devices, 
+                device = asyncio.run(select_and_connect_device(devices, 
                                                     SELECT_BUTTON_PIN, 
                                                     BLUETOOTH_BUTTON_PIN, 
                                                     BLUETOOTH_LED_PIN))
                 print("Devices paired and ready for data retrieval!")
-                #TODO: add function to request data from device
+
+                # retrieve medical data from patient device
+                asyncio.run(get_patient_data(device))
+
             else:
                 continue
             time.sleep(0.1)

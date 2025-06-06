@@ -71,7 +71,7 @@ async def select_and_connect_device(devices, select_pin, confirm_pin, led_pin):
                         async with BleakClient(device.address) as client:
                             print("Device connected via Bluetooth successfully!")
                         isTure = False  # break all loops
-                        return
+                        return device
                     except Exception as e:
                         print(f"Connection failed: {e}")
                         return
@@ -83,3 +83,10 @@ async def select_and_connect_device(devices, select_pin, confirm_pin, led_pin):
     except Exception as e:
         print(f"Error selecting and connecting to device: {e}")
         return None
+
+# function to retrieve patient data from patient device
+async def get_patient_data(device):
+    try: 
+        print(f"Retrieve patient data from device {device.name} (MAC: {device.address})")
+    except Exception as e:
+        print(f"Error retrieving patient data via Bluetooth: {e}")
