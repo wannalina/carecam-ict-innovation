@@ -2,7 +2,6 @@
 import RPi.GPIO as GPIO
 import time
 import asyncio
-from bleak import BleakScanner
 
 # import functions from libs
 from bluetooth_module.bluetooth import discover_devices
@@ -43,7 +42,7 @@ def main():
 
             # if bluetooth button pressed, begin device discovery
             if is_bluetooth_on:
-                asyncio.run(discover_devices())
+                asyncio.run(discover_devices())		# discover bluetooth devices
             else:
                 continue
 
