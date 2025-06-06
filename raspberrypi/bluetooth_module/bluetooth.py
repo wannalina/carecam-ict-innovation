@@ -35,6 +35,7 @@ async def discover_devices():
 
 # function to select and connect device
 async def select_and_connect_device(devices, select_pin, confirm_pin, led_pin):
+    isTrue = True
     scroll_index = 0
     last_scroll_index = 0
     last_selected_state = GPIO.input(select_pin)
@@ -46,12 +47,12 @@ async def select_and_connect_device(devices, select_pin, confirm_pin, led_pin):
 
         print("Use the button to 'scroll' through the list of devices. Select using the original button.")
 
-        while True:
+        while isTrue:
             device = devices[scroll_index]  # selected device
             print(f"Currently selected device: {device.name} with address {device.address}")
 
             # wait for button press
-            while True: 
+            while isTrue: 
                 select_state = GPIO.input(select_pin)   # select button state
                 confirm_state = GPIO.input(confirm_pin) # confirm button state
 
@@ -69,9 +70,8 @@ async def select_and_connect_device(devices, select_pin, confirm_pin, led_pin):
                     try: 
                         async with BleakClient(device.address) as client:
                             print("Device connected via Bluetooth successfully!")
-                            await asyncio.sleep(5)  #TODO: retrieve app data here
-
-                        sys.exit(0) # end program cleanly
+                        isTure = False  # break all loops
+                        return
                     except Exception as e:
                         print(f"Connection failed: {e}")
                         return

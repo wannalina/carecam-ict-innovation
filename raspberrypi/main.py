@@ -36,6 +36,8 @@ def main():
                                                     SELECT_BUTTON_PIN, 
                                                     BLUETOOTH_BUTTON_PIN, 
                                                     BLUETOOTH_LED_PIN))
+                print("Devices paired and ready for data retrieval!")
+                #TODO: add function to request data from device
             else:
                 continue
             time.sleep(0.1)
