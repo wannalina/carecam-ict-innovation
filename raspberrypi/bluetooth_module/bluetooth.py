@@ -3,6 +3,24 @@ from bleak import BleakScanner, BleakClient 	# bleak used for BLE / ideal for mo
 import asyncio
 import RPi.GPIO as GPIO
 import time
+import sys
+
+# function to listen to button press; returns int
+def button_press_action(button_state, output_pin, button_index):
+    try:
+        if button_state == GPIO.HIGH:
+            # button pressed "on" or "off"
+            GPIO.output(output_pin, GPIO.HIGH)
+            button_index += 1   # switch button status
+            return button_index
+        else:
+            # button not pressed
+            GPIO.output(output_pin, GPIO.LOW)
+            return button_index
+        time.sleep(0.5)
+        GPIO.output(BLUETOOTH_LED_PIN, GPIO.LOW)   # turn indicator led off for testing
+    except Exception as e:
+        print(f"Error reading button input: {e}")
 
 # function to discover bluetooth devices
 async def discover_devices():
@@ -16,8 +34,9 @@ async def discover_devices():
         return []
 
 # function to select and connect device
-async def select_and_connect_device(devices, select_pin, confirm_pin):
+async def select_and_connect_device(devices, select_pin, confirm_pin, led_pin):
     scroll_index = 0
+    last_scroll_index = 0
     last_selected_state = GPIO.input(select_pin)
     last_confirm_state = GPIO.input(confirm_pin)
     try:
@@ -36,20 +55,23 @@ async def select_and_connect_device(devices, select_pin, confirm_pin):
                 select_state = GPIO.input(select_pin)   # select button state
                 confirm_state = GPIO.input(confirm_pin) # confirm button state
 
+                scroll_index = button_press_action(select_state, led_pin, scroll_index)
                 # select button pressed
-                if select_state == GPIO.LOW and last_selected_state == GPIO.HIGH:
-                    print(f"Scroll button pressed {scroll_button_index} times.")
-                    scroll_index = (scroll_index + 1) % len(devices)    #
-                    break
+                if scroll_index != last_scroll_index:
+                    device = devices[scroll_index]
+                    print(f"Currently selected device: {device.name} with address {device.address}")
+                    last_scroll_index = scroll_index
+                    time.sleep(0.2)
 
                 # confirm pressed
-                if confirm_state == GPIO.LOW and last_confirm_state == GPIO.HIGH:
+                elif confirm_state == GPIO.LOW and last_confirm_state == GPIO.HIGH:
                     print(f"Attempting connection to '{device.name}'...")
                     try: 
                         async with BleakClient(device.address) as client:
                             print("Device connected via Bluetooth successfully!")
                             await asyncio.sleep(5)  #TODO: retrieve app data here
-                        return
+
+                        sys.exit(0) # end program cleanly
                     except Exception as e:
                         print(f"Connection failed: {e}")
                         return
@@ -57,7 +79,6 @@ async def select_and_connect_device(devices, select_pin, confirm_pin):
                 # reset i/o
                 last_selected_state = select_state
                 last_confirm_state = confirm_state
-                time.sleep(0.1)
 
     except Exception as e:
         print(f"Error selecting and connecting to device: {e}")
