@@ -70,7 +70,7 @@ async def select_and_connect_device(devices, select_pin, confirm_pin, led_pin):
                     try: 
                         async with BleakClient(device.address) as client:
                             print("Device connected via Bluetooth successfully!")
-                        isTure = False  # break all loops
+                        isTrue = False  # break all loops
                         return device
                     except Exception as e:
                         print(f"Connection failed: {e}")

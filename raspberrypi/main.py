@@ -39,7 +39,8 @@ def main():
                 print("Devices paired and ready for data retrieval!")
 
                 # retrieve medical data from patient device
-                asyncio.run(get_patient_data(device))
+                if device:
+                    asyncio.run(get_patient_data(device))
 
             else:
                 continue
