@@ -5,6 +5,9 @@ import RPi.GPIO as GPIO
 import time
 import sys
 
+# service UUID of the EmergencyID app
+APP_UUID = "00001234-0000-1000-8000-00805f9b34fb"
+
 # function to listen to button press; returns int
 def button_press_action(button_state, output_pin, button_index):
     try:
@@ -97,6 +100,7 @@ async def select_and_connect_device(devices, select_pin, confirm_pin, led_pin):
 
 # function to retrieve services running on the connected device
 async def get_services_on_device(device):
+    characteristic_index = 0
     try:
         async with BleakClient(device.address) as client:
             # check if devices are connected
@@ -114,10 +118,16 @@ async def get_services_on_device(device):
             # find EISI app service from services list
             for service in services:
                 print(f"Service: {service}, {service.uuid}")
-                for characteristic in service.characteristics:
-                    if "read" in characteristic.properties:
-                        service_data = (await client.read_gatt_char(characteristic.uuid)).decode('utf-8')
-                        print(f"Service value: {service_data}")              
+
+                # if service UUID equals EmergencyID app
+                if service.uuid == APP_UUID:
+                    for characteristic in service.characteristics:
+                        if "read" in characteristic.properties:
+                            # retrieve patient data
+                            service_data = (await client.read_gatt_char(characteristic.uuid)).decode('utf-8')
+                            print(f"Service value: {service_data}")
+                        # track characteristic
+                        characteristic_index += 1
 
                 
     except Exception as e:
