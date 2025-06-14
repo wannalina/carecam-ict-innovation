@@ -7,6 +7,15 @@ import sys
 
 # service UUID of the EmergencyID app
 APP_UUID = "00001234-0000-1000-8000-00805f9b34fb"
+CHARACTERISTIC_INDEX = {
+                            "00002a8a-0000-1000-8000-00805f9b34fb": "First Name", 
+                            "00002a90-0000-1000-8000-00805f9b34fb": "Last Name", 
+                            "00002a85-0000-1000-8000-00805f9b34fb": "Date of Birth",
+                            "00002a8c-0000-1000-8000-00805f9b34fb": "Sex",
+                            "00012a1e-0000-1000-8000-00805f9b34fb": "Allergies",
+                            "00002bff-0000-1020-8000-00805f9b34fb": "Medication",
+                            "00112b35-0000-1000-8000-00805f9b34fb": "Cholesterol Level"
+                        }
 
 # function to listen to button press; returns int
 def button_press_action(button_state, output_pin, button_index):
@@ -100,7 +109,7 @@ async def select_and_connect_device(devices, select_pin, confirm_pin, led_pin):
 
 # function to retrieve services running on the connected device
 async def get_services_on_device(device):
-    characteristic_index = 0
+    patient_characteristics = {}
     try:
         async with BleakClient(device.address) as client:
             # check if devices are connected
@@ -117,18 +126,14 @@ async def get_services_on_device(device):
 
             # find EISI app service from services list
             for service in services:
-                print(f"Service: {service}, {service.uuid}")
-
                 # if service UUID equals EmergencyID app
                 if service.uuid == APP_UUID:
                     for characteristic in service.characteristics:
                         if "read" in characteristic.properties:
-                            # retrieve patient data
+                            # retrieve patient data and add to dict
                             service_data = (await client.read_gatt_char(characteristic.uuid)).decode('utf-8')
-                            print(f"Service value: {service_data}")
-                        # track characteristic
-                        characteristic_index += 1
-
+                            patient_characteristics[CHARACTERISTIC_INDEX[characteristic.uuid]] = service_data
+                    print(f"Patient: {patient_characteristics}")
                 
     except Exception as e:
         print(f"Error retrieving services from device: {e}")
