@@ -57,6 +57,12 @@ async def select_and_connect_device(devices, select_pin, confirm_pin, led_pin):
                 confirm_state = GPIO.input(confirm_pin) # confirm button state
 
                 scroll_index = button_press_action(select_state, led_pin, scroll_index)
+
+                # check if scroll index out of range
+                if scroll_index == len(devices):
+                    scroll_index = 0
+                    last_scroll_index = -1
+
                 # select button pressed
                 if scroll_index != last_scroll_index:
                     device = devices[scroll_index]
@@ -70,6 +76,11 @@ async def select_and_connect_device(devices, select_pin, confirm_pin, led_pin):
                     try: 
                         async with BleakClient(device.address) as client:
                             print("Device connected via Bluetooth successfully!")
+
+                            if device:
+                                await get_services_on_device(device)
+                                await get_patient_data(device)
+
                         isTrue = False  # break all loops
                         return device
                     except Exception as e:
@@ -84,9 +95,40 @@ async def select_and_connect_device(devices, select_pin, confirm_pin, led_pin):
         print(f"Error selecting and connecting to device: {e}")
         return None
 
+# function to retrieve services running on the connected device
+async def get_services_on_device(device):
+    try:
+        async with BleakClient(device.address) as client:
+            # check if devices are connected
+            if not client.is_connected:
+                print("Error connecting to device.")
+                return
+
+            services = client.services
+
+            # if no available services
+            if not services:
+                print("No services running on the device.")
+                return
+
+            # find EISI app service from services list
+            for service in services:
+                print(f"Service: {service}, {service.uuid}")
+                for characteristic in service.characteristics:
+                    if "read" in characteristic.properties:
+                        service_data = (await client.read_gatt_char(characteristic.uuid)).decode('utf-8')
+                        print(f"Service value: {service_data}")              
+
+                
+    except Exception as e:
+        print(f"Error retrieving services from device: {e}")
+        return
+
 # function to retrieve patient data from patient device
 async def get_patient_data(device):
     try: 
         print(f"Retrieve patient data from device {device.name} (MAC: {device.address})")
+
+        
     except Exception as e:
         print(f"Error retrieving patient data via Bluetooth: {e}")

@@ -1,10 +1,16 @@
+'''
+Before you start the program, run: 
+sudo pip installl bleak --break-system-packages
+'''
+
+
 # import libraries
 import RPi.GPIO as GPIO
 import time
 import asyncio
 
 # import functions from libs
-from bluetooth_module.bluetooth import button_press_action, discover_devices, select_and_connect_device, get_patient_data
+from bluetooth_module.bluetooth import button_press_action, discover_devices, select_and_connect_device, get_services_on_device, get_patient_data
 
 # pin config
 BLUETOOTH_BUTTON_PIN = 17	# corresponds to physical pin 11
@@ -36,12 +42,6 @@ def main():
                                                     SELECT_BUTTON_PIN, 
                                                     BLUETOOTH_BUTTON_PIN, 
                                                     BLUETOOTH_LED_PIN))
-                print("Devices paired and ready for data retrieval!")
-
-                # retrieve medical data from patient device
-                if device:
-                    asyncio.run(get_patient_data(device))
-
             else:
                 continue
             time.sleep(0.1)
