@@ -90,8 +90,7 @@ async def select_and_connect_device(devices, select_pin, confirm_pin, led_pin):
                             print("Device connected via Bluetooth successfully!")
 
                             if device:
-                                await get_services_on_device(device)
-                                await get_patient_data(device)
+                                patient_characteristics = await get_services_on_device(device)
 
                         isTrue = False  # break all loops
                         return device
@@ -134,16 +133,9 @@ async def get_services_on_device(device):
                             service_data = (await client.read_gatt_char(characteristic.uuid)).decode('utf-8')
                             patient_characteristics[CHARACTERISTIC_INDEX[characteristic.uuid]] = service_data
                     print(f"Patient: {patient_characteristics}")
+                    return patient_characteristics
+            return None
                 
     except Exception as e:
         print(f"Error retrieving services from device: {e}")
         return
-
-# function to retrieve patient data from patient device
-async def get_patient_data(device):
-    try: 
-        print(f"Retrieve patient data from device {device.name} (MAC: {device.address})")
-
-        
-    except Exception as e:
-        print(f"Error retrieving patient data via Bluetooth: {e}")
