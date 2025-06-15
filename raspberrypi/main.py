@@ -10,7 +10,7 @@ import time
 import asyncio
 
 # import functions from libs
-from bluetooth_module.bluetooth import button_press_action, discover_devices, select_and_connect_device, get_services_on_device, get_patient_data
+from bluetooth_module.bluetooth import button_press_action, discover_devices, select_and_connect_device, get_services_on_device
 
 # pin config
 BLUETOOTH_BUTTON_PIN = 17	# corresponds to physical pin 11
