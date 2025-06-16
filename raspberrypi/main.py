@@ -5,7 +5,6 @@ os.environ['SDL_AUDIODRIVER'] = 'dummy'
 import pygame
 import time
 import asyncio
-import RPi.GPIO as GPIO
 
 from utils.button_module import ButtonHandler
 from services.camera_module import take_photo
@@ -119,5 +118,4 @@ if __name__ == "__main__":
     except Exception as e: 
         print(f"Error in main: {e}")
     finally:
-        GPIO.cleanup()
         pygame.quit()
