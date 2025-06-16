@@ -10,11 +10,7 @@ from utils.button_module import ButtonHandler
 from services.camera_module import take_photo
 from utils.cloud_module import upload_photo, get_patient_data as get_cloud_patient_data
 from utils.display_module import render_patient_data
-from services.bluetooth_module import (
-    discover_devices,
-    select_and_connect_device,
-    get_services_on_device
-)
+from services.bluetooth_module import (discover_devices, get_services_on_device, select_and_connect_device)
 
 # setup PyGame
 pygame.init()
@@ -52,10 +48,6 @@ def handle_scroll_up():
 def handle_scroll_down():
     print("[INFO] Scroll Down pressed.")
 
-# function to pair/confirm Bluetooth
-def handle_bluetooth():
-    print("[INFO] Bluetooth pair/confirm pressed.")
-
 # function to select and pair bluetooth devices
 def handle_bluetooth_pairing():
     try:
@@ -68,8 +60,11 @@ def handle_bluetooth_pairing():
             print("[BLUETOOTH] No devices found.")
             return
 
-        device = asyncio.run(select_and_connect_device(devices, andle_scroll_down, handle_bluetooth))
-
+        device = asyncio.run(select_and_connect_device(
+                                devices,
+                                scroll_down_callback=buttons.get_scroll_down_trigger,
+                                confirm_callback=buttons.get_confirm_trigger 
+                            ))
     except Exception as e:
         print(f"[BLUETOOTH] Error pairing device: {e}")
 

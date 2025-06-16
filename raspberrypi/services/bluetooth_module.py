@@ -44,15 +44,18 @@ async def discover_devices():
         return []
 
 # function to select and connect device
-async def select_and_connect_device(devices, scroll_callback, confirm_callback):
-    print("Use scroll button to select device.")
+async def select_and_connect_device(devices, scroll_down_callback, confirm_callback):
+    print("Use scroll down button to select device.")
     scroll_index = 0
     last_scroll_index = -1
     selected = False
     selected_device = None
+    
+    selected_device = devices[scroll_index]
+    print(f"[BLUETOOTH] Selected: {selected_device.name} at {selected_device.address}")
 
     while not selected:
-        scroll = scroll_callback()
+        scroll = scroll_down_callback()
         confirm = confirm_callback()
 
         if scroll:
@@ -62,6 +65,7 @@ async def select_and_connect_device(devices, scroll_callback, confirm_callback):
                 print(f"[BLUETOOTH] Selected: {selected_device.name} at {selected_device.address}")
                 last_scroll_index = scroll_index
 
+        print(f"Confirm: {confirm}")
         if confirm:
             try:
                 async with BleakClient(selected_device.address) as client:
