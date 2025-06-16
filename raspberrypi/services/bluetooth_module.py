@@ -66,26 +66,22 @@ async def select_and_connect_device(devices, scroll_down_callback, confirm_callb
                 last_scroll_index = scroll_index
 
         if confirm:
-            try:
-                async with BleakClient(selected_device.address) as client:
-                    print(f"[BLUETOOTH] Connected to {selected_device.name}")
-                    await get_services_on_device(selected_device)
-                    selected = True
-                    return selected_device
-            except Exception as e:
-                print(f"Connection failed: {e}")
-                return None
+            print("Selected device:", selected_device)
+            patient_data = await get_services_on_device(selected_device)
+            return patient_data
         await asyncio.sleep(0.2)
+    return None
 
 # function to retrieve services running on the connected device
 async def get_services_on_device(device):
     patient_characteristics = {}
     try:
         async with BleakClient(device.address) as client:
-            if not client.is_connected:
-                print("[BLUETOOTH] Not connected to device.")
-                return
-
+            print(f"[BLUETOOTH] Connected to {device.name}")
+            # await get_services_on_device(selected_device)
+            selected = True
+            print(device)
+        
             services = client.services
 
             if not services:

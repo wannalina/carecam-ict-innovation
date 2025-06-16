@@ -66,22 +66,13 @@ def handle_bluetooth_pairing():
                                 scroll_down_callback=buttons.get_scroll_down_trigger,
                                 confirm_callback=buttons.get_confirm_trigger 
                             ))
+        print(device)
     except Exception as e:
         print(f"[BLUETOOTH] Error pairing device: {e}")
 
 # function to confirm bluetooth pairing and fetch patient data
 def handle_bluetooth_confirm():
-    global device, current_patient_data, should_render
-    try:
-        if device: 
-            print("[BLUETOOTH] Fetching patient data from device...")
-            patient_data = asyncio.run(get_services_on_device(device))
-
-            if patient_data:
-                current_patient_data = patient_data
-                should_render = True
-    except Exception as e:
-        print(f"[BLUETOOTH] Error confirming: {e}")
+    print("[BLUETOOTH] Confirm pressed")
 
 if __name__ == "__main__":
     try:
