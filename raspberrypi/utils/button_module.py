@@ -68,11 +68,10 @@ class ButtonHandler:
             thread.start()
         if self.bluetooth_button_index % 2 == 0 and self.bluetooth_confirm_callback:
             print("[BLUETOOTH] Confirm device pairing...")
-            self._confrim_triggered = True
+            self._confirm_triggered = True
             self.led_bluetooth.blink(on_time=0.2, off_time=0.2, n=2)
             self.bluetooth_confirm_callback()
         self.bluetooth_button_index += 1
-        print(f"Bluetooth button index: {self.bluetooth_button_index}")
 
     def get_scroll_up_trigger(self):
         triggered = self._scroll_up_triggered
