@@ -23,24 +23,16 @@ current_patient_data = None
 should_render = False
 device = {}
 
-def build_patient_json(data_list):
-    """
-    data_list: list of strings in fixed order:
-    [First Name, Last Name, Date of Birth, Gender, Allergies, Medication, Cholesterol Level]
-    Allergies and Medication are semicolon-separated strings.
-    """
-    if len(data_list) != 7:
-        raise ValueError("Data list must contain exactly 7 elements.")
-
+def build_patient_json(patient):
     patient = {
-        "First Name": data_list[0],
-        "Last Name": data_list[1],
+        "First Name": patient.get("First Name", ""),
+        "Last Name": patient.get("Last Name", ""),
         "Image": "",  # placeholder
-        "Date of Birth": data_list[2],
-        "Gender": data_list[3],
-        "Allergies": data_list[4].split(';') if data_list[4] else [],
-        "Medication": data_list[5].split(';') if data_list[5] else [],
-        "Cholesterol Level": data_list[6]
+        "Date of Birth": patient.get("Date of Birth", ""),
+        "Gender": patient.get("Sex", ""),
+        "Conditions": [],
+        "Medication": patient.get("Medication", "").split(';') if patient.get("Medication", "") else [],
+        "Allergies": patient.get("Allergies", "").split(';') if patient.get("Allergies", "") else []
     }
 
     return patient

@@ -29,7 +29,7 @@ def render_patient_data(screen, patient):
     ]
 
     render_block(general_info, top_left)
-    #render_block(["Conditions:"] + patient['Conditions'], top_right)
+    render_block(["Conditions:"] + patient['Conditions'], top_right)
     render_block(["Allergies:"] + patient['Allergies'], bottom_left)
     render_block(["Medicines:"] + patient['Medication'], bottom_right)
 
