@@ -59,7 +59,7 @@ async def select_and_connect_device(devices, scroll_callback, confirm_callback):
             scroll_index = (scroll_index + 1) % len(devices)
             if scroll_index != last_scroll_index:
                 selected_device = devices[scroll_index]
-                print(f"[BLUETOOTH] Selected: {selected_device.name} @ {selected_device.address}")
+                print(f"[BLUETOOTH] Selected: {selected_device.name} at {selected_device.address}")
                 last_scroll_index = scroll_index
 
         if confirm:

@@ -1,7 +1,7 @@
 import threading
 from gpiozero import Button, LED
 from signal import pause
-from raspberrypi.services.camera_module import take_photo
+from services.camera_module import take_photo
 
 class ButtonHandler:
     def __init__(self, photo_callback=None, scroll_up_callback=None, scroll_down_callback=None, 
@@ -53,10 +53,12 @@ class ButtonHandler:
 
         if self.bluetooth_button_index % 2 == 0 and self.bluetooth_confirm_callback:
             print("[BLUETOOTH] Start pairing...")
-            thread = threading.Thread(target=self.bluetooth_pairing_callback, args=self.bluetooth_led,)
+            self.led_bluetooth.blink(on_time=0.1, off_time=0.1, n=1)
+            thread = threading.Thread(target=self.bluetooth_pairing_callback)
             thread.start()
         elif self.bluetooth_button_index & 2 != 0 and self.bluetooth_pairing_callback:
             print("[BLUETOOTH] Confirm device pairing...")
+            self.led_bluetooth.blink(on_time=0.2, off_time=0.2, n=2)
             self.bluetooth_confirm_callback()
         self.bluetooth_button_index += 1
 

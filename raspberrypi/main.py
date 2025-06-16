@@ -68,7 +68,7 @@ def handle_bluetooth_pairing():
             print("[BLUETOOTH] No devices found.")
             return
 
-        device = asyncio.run(select_and_connect_device(devices, scroll_down_callback=handle_scroll_down, bluetooth_callback=handle_bluetooth))
+        device = asyncio.run(select_and_connect_device(devices, andle_scroll_down, handle_bluetooth))
 
     except Exception as e:
         print(f"[BLUETOOTH] Error pairing device: {e}")
