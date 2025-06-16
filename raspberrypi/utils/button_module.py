@@ -14,8 +14,8 @@ class ButtonHandler:
         self.bluetooth_button = Button(17, bounce_time=0.5)
 
         # LED light wiring
-        self.led_photo = LED(21)
-        self.led_scroll = LED(20)
+        self.led_photo = LED(20)
+        self.led_scroll = LED(16)
         self.led_bluetooth = LED(12)
 
         # callbacks
@@ -56,7 +56,6 @@ class ButtonHandler:
         self.led_scroll.blink(on_time=0.1, off_time=0.1, n=1)
         if self.scroll_down_callback:
             self.scroll_down_callback()
-
 
     def handle_bluetooth_press(self):
         self.led_bluetooth.blink(on_time=0.2, off_time=0.2, n=2)

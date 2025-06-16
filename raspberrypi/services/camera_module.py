@@ -2,7 +2,7 @@ import subprocess
 import os
 from datetime import datetime
 
-PHOTO_DIR = "photos"
+PHOTO_DIR = "/photos"
 
 def take_photo():
         # Create the directory if it doesn't exist
@@ -21,5 +21,5 @@ def take_photo():
                 print(f"[Camera] Picture saved in {filepath}")
                 return filepath
         except subprocess.CalledProcessError:
-                print("[Camera] Errror while taking the picture.")
+                print("[Camera] Error while taking the picture.")
                 return None

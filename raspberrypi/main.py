@@ -5,12 +5,13 @@ os.environ['SDL_AUDIODRIVER'] = 'dummy'
 import pygame
 import time
 import asyncio
+import sys
 
 from utils.button_module import ButtonHandler
 from services.camera_module import take_photo
 from utils.cloud_module import upload_photo, get_patient_data as get_cloud_patient_data
 from utils.display_module import render_patient_data
-from services.bluetooth_module import (discover_devices, get_services_on_device, select_and_connect_device)
+from services.bluetooth_module import discover_devices, get_services_on_device, select_and_connect_device
 
 # setup PyGame
 pygame.init()
@@ -82,7 +83,6 @@ def handle_bluetooth_confirm():
     except Exception as e:
         print(f"[BLUETOOTH] Error confirming: {e}")
 
-
 if __name__ == "__main__":
     try:
         # define camera buttons
@@ -114,3 +114,4 @@ if __name__ == "__main__":
         print(f"Error in main: {e}")
     finally:
         pygame.quit()
+        sys.exit(0)
