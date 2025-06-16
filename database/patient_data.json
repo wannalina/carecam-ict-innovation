@@ -1,20 +1,18 @@
 {
-    "patients": [
-        {
-            "First Name": "Alice",
-            "Last Name": "Johnson",
-            "Image": "",
-            "Date of Birth": "13/07/1956",
-            "Gender": "Female",
-            "Allergies": [
-                "Type 2 Diabetes",
-                "Hypertension"
-            ],
-            "Medication": [
-                "Metformin 500mg",
-                "Lisinopril 10mg"
-            ],
-            "Cholesterol Level": "200mg/dL"
-        }
+    "First Name": "Alice",
+    "Last Name": "Johnson",
+    "Image": "",
+    "Date of Birth": "13/07/1956",
+    "Gender": "Female",
+    "Conditions": [
+        "Type 2 Diabetes",
+        "Hypertension"
+    ],
+    "Allergies": [
+	"Peanuts"
+    ],
+    "Medication": [
+        "Metformin 500mg",
+        "Lisinopril 10mg"
     ]
-}  
+}

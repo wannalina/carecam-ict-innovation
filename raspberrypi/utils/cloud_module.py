@@ -2,7 +2,7 @@ import os
 import shutil
 import json
 
-FAKE_CLOUD_DIR = "carecam-ict-innovation/database/"
+FAKE_CLOUD_DIR = "../database/"
 PATIENT_DATA_FILE = os.path.join(FAKE_CLOUD_DIR, "patient_data.json")
 
 def upload_photo(photo_path):

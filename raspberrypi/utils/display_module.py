@@ -22,14 +22,15 @@ def render_patient_data(screen, patient):
             y += 30
 
     general_info = [
-        f"Name: {patient.get('name', 'N/A')}",
-        f"Age: {patient.get('age', 'N/A')}",
-        f"Blood type: {patient.get('blood_type', 'N/A')}"
+        f"First Name: {patient.get('First Name', 'N/A')}",
+        f"Last Name: {patient.get('Last Name', 'N/A')}",        
+        f"Date of Birth: {patient.get('Date of Birth', 'N/A')}",
+        f"Gender: {patient.get('Gender', 'N/A')}"
     ]
 
     render_block(general_info, top_left)
-    render_block(["Conditions:"] + patient['conditions'], top_right)
-    render_block(["Allergies:"] + patient['allergies'], bottom_left)
-    render_block(["Medicines:"] + patient['medicines'], bottom_right)
+    #render_block(["Conditions:"] + patient['Conditions'], top_right)
+    render_block(["Allergies:"] + patient['Allergies'], bottom_left)
+    render_block(["Medicines:"] + patient['Medication'], bottom_right)
 
     pygame.display.flip()

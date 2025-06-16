@@ -40,6 +40,13 @@ def handle_photo():
     else:
         print("[ERROR] Upload failed.")
 
+    # render patient data if exists and allowed
+    if should_render and current_patient_data:
+        render_patient_data(screen, current_patient_data)
+        should_render = False
+
+    time.sleep(0.1)
+
 
 # function to scroll up using buttons
 def handle_scroll_up():
@@ -52,7 +59,7 @@ def handle_scroll_down():
 # function to select and pair bluetooth devices
 def handle_bluetooth_pairing():
     try:
-        global device
+        global current_patient_data
 
         print("[BLUETOOTH] Discovering Bluetooth devices...")
         devices = asyncio.run(discover_devices())
@@ -61,12 +68,20 @@ def handle_bluetooth_pairing():
             print("[BLUETOOTH] No devices found.")
             return
 
-        device = asyncio.run(select_and_connect_device(
+        current_patient_data = asyncio.run(select_and_connect_device(
                                 devices,
                                 scroll_down_callback=buttons.get_scroll_down_trigger,
                                 confirm_callback=buttons.get_confirm_trigger 
                             ))
-        print(device)
+                            
+        should_render = True
+        # render patient data if exists and allowed
+        if should_render and current_patient_data:
+            render_patient_data(screen, current_patient_data)
+            should_render = False
+
+        time.sleep(0.1)
+        
     except Exception as e:
         print(f"[BLUETOOTH] Error pairing device: {e}")
 
@@ -86,19 +101,10 @@ if __name__ == "__main__":
         )
 
         print("[SYSTEM] System initialized. Listening for events...")
-
+        
         while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    raise KeyboardInterrupt
-
-            # render patient data if exists and allowed
-            if should_render and current_patient_data:
-                render_patient_data(screen, current_patient_data)
-                should_render = False
-
-            time.sleep(0.1)
-
+            continue
+        
     except KeyboardInterrupt:
         print("[SYSTEM] Shutting down...")
     except Exception as e: 
