@@ -1,66 +1,20 @@
 {
     "patients": [
         {
-            "name": "Alice Johnson",
-            "image": "",
-            "dob": "1985-04-12",
-            "gender": "Female",
-            "medical_conditions": [
+            "First Name": "Alice",
+            "Last Name": "Johnson",
+            "Image": "",
+            "Date of Birth": "13/07/1956",
+            "Gender": "Female",
+            "Allergies": [
                 "Type 2 Diabetes",
                 "Hypertension"
             ],
-            "medications": [
-                {
-                    "name": "Metformin",
-                    "dosage": "500mg",
-                    "frequency": "Twice daily"
-                },
-                {
-                    "name": "Lisinopril",
-                    "dosage": "10mg",
-                    "frequency": "Once daily"
-                }
+            "Medication": [
+                "Metformin 500mg",
+                "Lisinopril 10mg"
             ],
-            "critical_info": {
-                "allergies": ["Penicillin"],
-                "blood_type": "O+",
-                "emergency_contact": {
-                    "name": "Robert Johnson",
-                    "relation": "Husband",
-                    "phone": "555-123-4567"
-                }
-            }
-        },
-        {
-            "name": "Michael Smith",
-            "image": "",
-            "dob": "1972-09-30",
-            "gender": "Male",
-            "medical_conditions": [
-                "Asthma",
-                "High Cholesterol"
-            ],
-            "medications": [
-                {
-                    "name": "Albuterol Inhaler",
-                    "dosage": "2 puffs",
-                    "frequency": "As needed"
-                },
-                {
-                    "name": "Atorvastatin",
-                    "dosage": "20mg",
-                    "frequency": "Once daily"
-                }
-            ],
-            "critical_info": {
-                "allergies": [],
-                "blood_type": "A-",
-                "emergency_contact": {
-                    "name": "Laura Smith",
-                    "relation": "Wife",
-                    "phone": "555-987-6543"
-                }
-            }
+            "Cholesterol Level": "200mg/dL"
         }
     ]
 }  
