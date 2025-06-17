@@ -1,9 +1,11 @@
 import os
 import shutil
 import json
+import requests
 
 FAKE_CLOUD_DIR = "../database/"
 PATIENT_DATA_FILE = os.path.join(FAKE_CLOUD_DIR, "patient_data.json")
+NODE_RED_URL = "http://localhost:1880"
 
 def upload_photo(photo_path):
         if not os.path.exists(FAKE_CLOUD_DIR):
@@ -27,3 +29,15 @@ def get_patient_data():
         except Exception as e:
                 print(f"[Cloud] Error while recovering data: {e}")
                 return {}
+
+def post_to_nodered(patient_data):
+        try:
+                response = requests.post(f"{NODE_RED_URL}/patient-data", json=patient_data)
+                if response.status_code == 200:
+                        print("[Cloud] Data sent to Node-RED successfully")
+                else:
+                        print(f"[Cloud] Failed to send data to Node-RED: {response.status_code}")
+                return
+        except Exception as e:
+                print(f"[Cloud] Error sending data to Node-RED: {e}")
+                return
