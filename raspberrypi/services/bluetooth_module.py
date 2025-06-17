@@ -13,24 +13,6 @@ CHARACTERISTIC_INDEX = {
                             "00002bff-0000-1020-8000-00805f9b34fb": "Medication",
                             "00112b35-0000-1000-8000-00805f9b34fb": "Cholesterol Level"
                         }
-'''
-# function to listen to button press; returns int
-def button_press_action(button_state, output_pin, button_index):
-    try:
-        if button_state == GPIO.HIGH:
-            # button pressed "on" or "off"
-            GPIO.output(output_pin, GPIO.HIGH)
-            button_index += 1   # switch button status
-            return button_index
-        else:
-            # button not pressed
-            GPIO.output(output_pin, GPIO.LOW)
-            return button_index
-        time.sleep(0.5)
-        GPIO.output(BLUETOOTH_LED_PIN, GPIO.LOW)   # turn indicator led off for testing
-    except Exception as e:
-        print(f"Error reading button input: {e}")
-'''
 
 # function to discover bluetooth devices
 async def discover_devices():

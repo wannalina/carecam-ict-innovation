@@ -21,8 +21,20 @@ pygame.display.set_caption('Patient Data')
 # track state
 current_patient_data = None
 should_render = False
-device = {}
 
+# function to check if patient data should be rendered
+def check_render_patient_data():
+    global should_render, current_patient_data
+    try: 
+        # render patient data if exists and allowed
+        if should_render and current_patient_data:
+            render_patient_data(screen, current_patient_data)
+            should_render = False
+    except Exception as e:
+        print(f"Error rendering patient data: {e}")
+        return
+
+# function to convert data from bluetooth into correct datatype
 def build_patient_json(patient):
     patient = {
         "First Name": patient.get("First Name", ""),
@@ -53,11 +65,6 @@ def handle_photo():
     else:
         print("[ERROR] Upload failed.")
 
-    # render patient data if exists and allowed
-    if should_render and current_patient_data:
-        render_patient_data(screen, current_patient_data)
-        should_render = False
-
     time.sleep(0.1)
 
 
@@ -72,7 +79,7 @@ def handle_scroll_down():
 # function to select and pair bluetooth devices
 def handle_bluetooth_pairing():
     try:
-        global current_patient_data
+        global should_render, current_patient_data
 
         print("[BLUETOOTH] Discovering Bluetooth devices...")
         devices = asyncio.run(discover_devices())
@@ -88,11 +95,8 @@ def handle_bluetooth_pairing():
                             ))
         current_patient_data = build_patient_json(patient_data)                   
         should_render = True
-        # render patient data if exists and allowed
-        if should_render and current_patient_data:
-            render_patient_data(screen, current_patient_data)
-            should_render = False
 
+        check_render_patient_data()
         time.sleep(0.1)
         
     except Exception as e:
@@ -116,7 +120,7 @@ if __name__ == "__main__":
         print("[SYSTEM] System initialized. Listening for events...")
         
         while True:
-            continue
+            check_render_patient_data()
         
     except KeyboardInterrupt:
         print("[SYSTEM] Shutting down...")
