@@ -15,29 +15,16 @@ def render_patient_data(screen, patient):
 
     screen.fill(BACKEGROUND_COLOR)
 
-    '''top_left = (20, 20)
-    top_right = (420, 20)
-    bottom_left = (20, 260)
-    bottom_right = (420, 260)
-
-    def render_block(data_lines, start_pos):
-        x, y = start_pos
-        for line in data_lines:
-            text_surface = font.render(line, True, text_color)
-            screen.blit(text_surface, (x, y))
-            y += 30
-
-    general_info = [
-        f"First Name: {patient.get('First Name', 'N/A')}",
-        f"Last Name: {patient.get('Last Name', 'N/A')}",        
-        f"Date of Birth: {patient.get('Date of Birth', 'N/A')}",
-        f"Gender: {patient.get('Gender', 'N/A')}"
-    ]
-
-    render_block(general_info, top_left)
-    render_block(["Conditions:"] + patient['Conditions'], top_right)
-    render_block(["Allergies:"] + patient['Allergies'], bottom_left)
-    render_block(["Medication:"] + patient['Medication'], bottom_right)'''
+    def display_image():
+        try:
+            image_path = patient.get('image')
+            patient_image = pygame.image.load(image_path)
+            patient_image = pygame.transform.scale(patient_image, (140, 140))
+            screen.blit(patient_image, (140, 140))
+        except Exception as e:
+            pygame.draw.rect(screen, (200, 200, 200), (630, 20, *(140, 140)))
+            no_image_text = label_font.render("No Image", True, DARK_GRAY)
+            screen.blit(no_image_text, (650, 75))
     
     def draw_section(title, items, start_x, start_y):
         header_rect = pygame.Rect(start_x, start_y, 360, 35)
@@ -54,7 +41,8 @@ def render_patient_data(screen, patient):
     name = f"{patient.get('First Name', 'N/A')} {patient.get('Last Name')}"
     date_of_birth = f"{patient.get('Date of Birth', 'N/A')}"
     sex = f"{patient.get('Gender', 'N/A')}"
-    
+
+    display_image()
     draw_section("Patient Information", [f"Name: {name}", f"Date of Birth: {date_of_birth}", f"Sex: {sex}"], 20, 20)
     draw_section("Conditions", patient['Conditions'], 420, 20)
     draw_section("Allergies", patient['Allergies'], 20, 250)

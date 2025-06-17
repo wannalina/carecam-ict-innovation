@@ -14,8 +14,18 @@ def upload_photo(photo_path):
 
         dest_path = os.path.join(PHOTOS_DIR, os.path.basename(photo_path))
         try:
+                # store photo in photos dir
                 shutil.copy(photo_path, dest_path)
                 print(f"[Cloud] Picture sent to the cloud: {dest_path}")
+                
+                # update patient_data.json with image path
+                with open(PATIENT_DATA_FILE, "r") as file: 
+                        data = json.load(file)
+                data["image"] = photo_path
+                
+                with open(PATIENT_DATA_FILE, "w") as file:
+                        json.dump(data, file, indent=4)
+
                 return True
         except Exception as e:
                 print(f"[Cloud] Error while uploading: {e}")
