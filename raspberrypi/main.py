@@ -21,15 +21,24 @@ pygame.display.set_caption('Patient Data')
 # track state
 current_patient_data = None
 should_render = False
+reset_render = False
 
 # function to check if patient data should be rendered
 def check_render_patient_data():
-    global should_render, current_patient_data
-    try: 
+    global should_render, reset_render, current_patient_data
+    try:
+        # clear screen and reset display before rendering new data
+        if reset_render:
+            reset_render = False
+            screen.fill((0, 0, 0))
+            pygame.display.update()
+            time.sleep(0.1)
+
         # render patient data if exists and allowed
         if should_render and current_patient_data:
             render_patient_data(screen, current_patient_data)
             should_render = False
+
     except Exception as e:
         print(f"Error rendering patient data: {e}")
         return
@@ -51,7 +60,10 @@ def build_patient_json(patient):
 
 # photo button handlers
 def handle_photo():
-    global current_patient_data, should_render
+    global current_patient_data, should_render, reset_render
+    reset_render = True
+    current_patient_data = None # reset patient data
+
     print("[INFO] Taking photo...")
     image_path = take_photo()
     if not image_path:
@@ -79,7 +91,9 @@ def handle_scroll_down():
 # function to select and pair bluetooth devices
 def handle_bluetooth_pairing():
     try:
-        global should_render, current_patient_data
+        global should_render, current_patient_data, reset_render
+        reset_render = True
+        current_patient_data = None # reset patient data
 
         print("[BLUETOOTH] Discovering Bluetooth devices...")
         devices = asyncio.run(discover_devices())
