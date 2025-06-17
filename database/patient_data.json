@@ -4,15 +4,7 @@
     "Image": "",
     "Date of Birth": "13/07/1956",
     "Gender": "Female",
-    "Conditions": [
-        "Type 2 Diabetes",
-        "Hypertension"
-    ],
-    "Allergies": [
-	"Peanuts"
-    ],
-    "Medication": [
-        "Metformin 500mg",
-        "Lisinopril 10mg"
-    ]
+    "Conditions": ["Type 2 Diabetes", "Hypertension"],
+    "Allergies": ["Peanuts"],
+    "Medication": ["Metformin 500mg", "Lisinopril 10mg"]
 }

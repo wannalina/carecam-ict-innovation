@@ -2,7 +2,7 @@ import os
 os.environ["XDG_RUNTIME_DIR"] = "/tmp/runtime-user"
 os.environ['SDL_AUDIODRIVER'] = 'dummy'
 
-#import pygame
+import pygame
 import time
 import asyncio
 import sys
@@ -10,14 +10,14 @@ import sys
 from utils.button_module import ButtonHandler
 from services.camera_module import take_photo
 from utils.cloud_module import upload_photo, get_patient_data as get_cloud_patient_data
-#from raspberrypi.ui.display_module import render_patient_data
+from ui.display_module import render_patient_data
 from services.bluetooth_module import discover_devices, select_and_connect_device
-from utils.cloud_module import post_to_nodered
+# from utils.cloud_module import post_to_nodered
 
 # setup PyGame
-'''pygame.init()
+pygame.init()
 screen = pygame.display.set_mode((800, 480))
-pygame.display.set_caption('Patient Data')'''
+pygame.display.set_caption('Patient Data')
 
 # track state
 current_patient_data = None
@@ -31,14 +31,14 @@ def check_render_patient_data():
         # clear screen and reset display before rendering new data
         if reset_render:
             reset_render = False
-            '''screen.fill((0, 0, 0))
-            pygame.display.update()'''
+            screen.fill((0, 0, 0))
+            pygame.display.update()
             time.sleep(0.1)
 
         # render patient data if exists and allowed
         if should_render and current_patient_data:
-            #render_patient_data(screen, current_patient_data)
-            post_to_nodered(current_patient_data)
+            render_patient_data(screen, current_patient_data)
+            # post_to_nodered(current_patient_data)
             should_render = False
 
     except Exception as e:
@@ -143,5 +143,5 @@ if __name__ == "__main__":
     except Exception as e: 
         print(f"Error in main: {e}")
     finally:
-        #pygame.quit()
+        pygame.quit()
         sys.exit(0)

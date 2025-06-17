@@ -4,14 +4,15 @@ import json
 import requests
 
 FAKE_CLOUD_DIR = "../database/"
+PHOTOS_DIR = "../database/photos/"
 PATIENT_DATA_FILE = os.path.join(FAKE_CLOUD_DIR, "patient_data.json")
 NODE_RED_URL = "http://localhost:1880"
 
 def upload_photo(photo_path):
-        if not os.path.exists(FAKE_CLOUD_DIR):
-                os.makedirs(FAKE_CLOUD_DIR)
+        if not os.path.exists(PHOTOS_DIR):
+                os.makedirs(PHOTOS_DIR)
 
-        dest_path = os.path.join(FAKE_CLOUD_DIR, os.path.basename(photo_path))
+        dest_path = os.path.join(PHOTOS_DIR, os.path.basename(photo_path))
         try:
                 shutil.copy(photo_path, dest_path)
                 print(f"[Cloud] Picture sent to the cloud: {dest_path}")
