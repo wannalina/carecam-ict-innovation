@@ -5,7 +5,6 @@ def render_patient_data(screen, patient):
     pygame.font.init()  # assicurati che il font system sia inizializzato
     title_font = pygame.font.Font(None, 40)
     label_font = pygame.font.Font(None, 25)
-    #font = pygame.font.Font(None, 28)
 
     # define colors
     BACKEGROUND_COLOR = (240, 248, 255)
@@ -26,15 +25,15 @@ def render_patient_data(screen, patient):
             no_image_text = label_font.render("No Image", True, DARK_GRAY)
             screen.blit(no_image_text, (650, 75))
     
-    def draw_section(title, items, start_x, start_y):
-        header_rect = pygame.Rect(start_x, start_y, 360, 35)
+    def draw_section(title, items, start_x, start_y, width=360):
+        header_rect = pygame.Rect(start_x, start_y, width, 35)
         pygame.draw.rect(screen, HEADER_BACKGROUND_COLOR, header_rect)
         header_text = title_font.render(title, True, DARK_GRAY)
         screen.blit(header_text, (start_x + 10, start_y + 5))
         
         y_offset = start_y + 45
         for item in items: 
-            line = label_font.render(f"¤ {item}", True, BLACK)
+            line = label_font.render(f"• {item}", True, BLACK)
             screen.blit(line, (start_x + 50, y_offset))
             y_offset += 28
     
@@ -44,8 +43,8 @@ def render_patient_data(screen, patient):
 
     display_image()
     draw_section("Patient Information", [f"Name: {name}", f"Date of Birth: {date_of_birth}", f"Sex: {sex}"], 20, 20)
-    draw_section("Conditions", patient['Conditions'], 420, 20)
-    draw_section("Allergies", patient['Allergies'], 20, 250)
-    draw_section("Medications", patient['Medication'], 420, 250)
+    draw_section("Conditions", patient['Conditions'], 20, 200)
+    draw_section("Allergies", patient['Allergies'], 420, 200)
+    draw_section("Medications", patient['Medication'], 20, 380)
 
     pygame.display.flip()
