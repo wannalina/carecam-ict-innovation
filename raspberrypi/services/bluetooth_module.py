@@ -1,7 +1,7 @@
 # import libs
 from bleak import BleakScanner, BleakClient 	# bleak used for BLE / ideal for modern phones
 import asyncio
-from ui.display_module import render_bluetooth_instructions, reset_display
+import time
 
 # service UUID of the EmergencyID app
 APP_UUID = "00001234-0000-1000-8000-00805f9b34fb"
@@ -21,13 +21,13 @@ async def discover_devices():
         devices = await BleakScanner.discover()
         for device in devices:
             print(f"[BLUETOOTH] Device {device.name} found with address: {device.address}")
-        return devices
+        return devices, True
     except Exception as e:
         print(f"Error in device discovery: {e}")
-        return []
+        return [], False
 
 # function to select and connect device
-async def select_and_connect_device(screen, devices, scroll_down_callback, confirm_callback):
+async def select_and_connect_device(devices, scroll_down_callback, confirm_callback, back_callback):
     print("Use scroll down button to select device.")
     scroll_index = 0
     last_scroll_index = -1
@@ -36,13 +36,16 @@ async def select_and_connect_device(screen, devices, scroll_down_callback, confi
     
     selected_device = devices[scroll_index]
     print(f"[BLUETOOTH] Selected: {selected_device.name} at {selected_device.address}")
-    
-    reset_display(screen)
-    render_bluetooth_instructions(screen, selected_device, devices)
 
     while not selected:
         scroll = scroll_down_callback()
         confirm = confirm_callback()
+        back = back_callback()
+        
+        if back:
+            selected = True
+            selected_device = None
+            return None, False
 
         if scroll:
             scroll_index = (scroll_index + 1) % len(devices)
@@ -52,11 +55,13 @@ async def select_and_connect_device(screen, devices, scroll_down_callback, confi
                 last_scroll_index = scroll_index
 
         if confirm:
+            selected = True
             print("Selected device:", selected_device)
             patient_data = await get_services_on_device(selected_device)
-            return patient_data
-        time.sleep(0.2)
-    return None
+            return patient_data, False
+
+    time.sleep(0.2)
+    return None, False
 
 # function to retrieve services running on the connected device
 async def get_services_on_device(device):

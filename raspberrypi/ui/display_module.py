@@ -24,6 +24,8 @@ START_Y_MIDDLE = 205
 START_Y_BOTTOM = 340
 CARD_WIDTH = 370
 CARD_HEIGHT = 120
+SELECTED_DEV_X = 150
+SELECTED_DEV_Y = 430
 
 START_INSTRUCTIONS_CAMERA = [
     "To take a picture of the patient's face,", 
@@ -54,27 +56,51 @@ def render_start_instructions(screen):
     pygame.display.flip()
 
 
-def render_bluetooth_instructions(screen, current_device, bluetooth_devices):
+def render_bluetooth_instructions(screen, devices, scroll_down_callback, confirm_callback, back_callback):
+    selected = False
+    scroll_index = 0
+    last_scroll_index = -1
+
     print("[DISPLAY] Rendering Bluetooth instructions...")
     screen.fill(BACKGROUND_COLOR)
 
     title_text = TITLE_FONT.render("Discovered Bluetooth Devices", True, TITLE_COLOR)
-    screen.blit(title_text, (START_X_LEFT + 20, START_Y_TOP + 30))
+    screen.blit(title_text, (SELECTED_DEV_X + 100, 30))
 
-    y_offset = START_Y_TOP + 50
-    for device in bluetooth_devices:
+    y_offset = START_Y_TOP + 20
+    for device in devices:
         device_text = f"Device {device.name} found with address: {device.address}"
         value_text = TEXT_FONT.render(device_text, True, TEXT_COLOR)
-        screen.blit(value_text, (START_X_LEFT + 20, y_offset))
-        y_offset += 28
+        screen.blit(value_text, (SELECTED_DEV_X, y_offset))
+        y_offset += 25
 
-    scroll_text = TEXT_FONT.render("Press the 2nd button from the left to scroll the list", True, TEXT_COLOR)
-    screen.blit(scroll_text, (START_X_LEFT + 20, START_Y_BOTTOM))
+    scroll_text = TEXT_FONT.render("Press the 2nd button from the left to scroll the list:", True, TITLE_COLOR)
+    screen.blit(scroll_text, (SELECTED_DEV_X, SELECTED_DEV_Y - 20))
 
-    currently_selected_text = TEXT_FONT.render(f"Selected device: {current_device.name}", True, TITLE_COLOR)
-    screen.blit(currently_selected_text, (START_X_LEFT + 20, START_Y_BOTTOM + 20))
-
+    currently_selected_text = TEXT_FONT.render(f"Selected device:   {devices[scroll_index].name}", True, TITLE_COLOR)
+    screen.blit(currently_selected_text, (SELECTED_DEV_X, SELECTED_DEV_Y))
     pygame.display.flip()
+
+    while not selected:
+        scroll = scroll_down_callback()
+        confirm = confirm_callback()
+        back = back_callback()
+
+        if back:
+            selected = True
+        
+        if scroll:
+            scroll_index = (scroll_index + 1) % len(devices)
+            if scroll_index != last_scroll_index:
+                pygame.draw.rect(screen, BACKGROUND_COLOR, pygame.Rect((SELECTED_DEV_X, SELECTED_DEV_Y, 400, 30)))
+                selected_device = devices[scroll_index]
+                currently_selected_text = TEXT_FONT.render(f"Selected device:   {selected_device.name}", True, TITLE_COLOR)
+                screen.blit(currently_selected_text, (SELECTED_DEV_X, SELECTED_DEV_Y))
+                last_scroll_index = scroll_index
+                pygame.display.flip()
+
+        if confirm:
+            selected = True
 
 
 def render_patient_data(screen, patient):

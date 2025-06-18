@@ -24,11 +24,14 @@ current_patient_data = None
 should_render = False
 reset_render = False
 render_start = True
+render_bluetooth_instruct = False
+devices = []
+
 
 
 # function to check if patient data should be rendered
 def check_render_patient_data():
-    global should_render, reset_render, current_patient_data, render_start
+    global should_render, reset_render, current_patient_data, render_start, render_bluetooth_instruct, devices
     try:
         # clear screen and reset display before rendering new data
         if reset_render:
@@ -36,9 +39,23 @@ def check_render_patient_data():
 
         # render start instructions
         if render_start:
-            reset_render = False
             current_patient_data = None
+            render_start = False
             render_start_instructions(screen)
+            time.sleep(0.1)
+
+        # render bluetooth instructions and discovered devices
+        if render_bluetooth_instruct:
+            render_bluetooth_instruct = False
+            current_device = render_bluetooth_instructions(
+                                            screen, 
+                                            devices, 
+                                            scroll_down_callback=buttons.get_scroll_down_trigger,
+                                            confirm_callback=buttons.get_confirm_trigger,
+                                            back_callback=buttons.get_back_trigger
+                                         )
+            reset_render = True
+            should_render = True
             time.sleep(0.1)
 
         # render patient data if exists and allowed
@@ -88,9 +105,8 @@ def handle_photo():
 
 # function to return to main instructions
 def handle_back_to_start():
-    global reset_render, render_start
+    global render_start
     print("[INFO] Back to start pressed.")
-    reset_render = True
     render_start = True
 
 # function to scroll down using buttons
@@ -100,27 +116,29 @@ def handle_scroll_down():
 # function to select and pair bluetooth devices
 def handle_bluetooth_pairing():
     try:
-        global should_render, current_patient_data, reset_render, render_start
+        global should_render, current_patient_data, reset_render, render_start, render_bluetooth_instruct, devices
         render_start = False
         current_patient_data = None # reset patient data
 
         print("[BLUETOOTH] Discovering Bluetooth devices...")
-        devices = asyncio.run(discover_devices())
-
-        reset_render = reset_display(screen)
-        render_bluetooth_instructions(screen, devices[0], devices)
-        print("??")
+        devices, render_bluetooth_instruct = asyncio.run(discover_devices())
 
         if not devices:
             print("[BLUETOOTH] No devices found.")
             return
 
-        patient_data = asyncio.run(select_and_connect_device(
+        patient_data, render_bluetooth_instruct = asyncio.run(select_and_connect_device(
                                 devices,
-                                scroll_down_callback=buttons.get_scroll_down_trigger,
-                                confirm_callback=buttons.get_confirm_trigger 
+                                scroll_down_callback=buttons.get_scroll_down_trigger_ble,
+                                confirm_callback=buttons.get_confirm_trigger_ble,
+                                back_callback=buttons.get_back_trigger_ble
                             ))
-        current_patient_data = build_patient_json(patient_data)
+
+        if patient_data is not None:
+            current_patient_data = build_patient_json(patient_data)
+        else: 
+            current_patient_data = None
+
         time.sleep(0.1)
         
     except Exception as e:
@@ -128,11 +146,8 @@ def handle_bluetooth_pairing():
 
 # function to confirm bluetooth pairing and fetch patient data
 def handle_bluetooth_confirm():
-    global should_render
-
     print("[BLUETOOTH] Confirm pressed")
     should_render = True
-    check_render_patient_data()
 
 if __name__ == "__main__":
     try:
