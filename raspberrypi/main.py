@@ -10,7 +10,7 @@ import sys
 from utils.button_module import ButtonHandler
 from services.camera_module import take_photo
 from utils.cloud_module import upload_photo, get_patient_data as get_cloud_patient_data
-from ui.display_module import render_patient_data, render_start_instructions
+from ui.display_module import render_patient_data, render_start_instructions, render_bluetooth_instructions, reset_display
 from services.bluetooth_module import discover_devices, select_and_connect_device
 # from utils.cloud_module import post_to_nodered
 
@@ -25,20 +25,19 @@ should_render = False
 reset_render = False
 render_start = True
 
+
 # function to check if patient data should be rendered
 def check_render_patient_data():
     global should_render, reset_render, current_patient_data, render_start
     try:
         # clear screen and reset display before rendering new data
         if reset_render:
-            reset_render = False
-            screen.fill((0, 0, 0))
-            pygame.display.update()
-            time.sleep(0.1)
+            reset_render = reset_display(screen)
 
         # render start instructions
         if render_start:
             reset_render = False
+            current_patient_data = None
             render_start_instructions(screen)
             time.sleep(0.1)
 
@@ -64,7 +63,6 @@ def build_patient_json(patient):
         "Medication": patient.get("Medication", "").split(';') if patient.get("Medication", "") else [],
         "Allergies": patient.get("Allergies", "").split(';') if patient.get("Allergies", "") else []
     }
-
     return patient
 
 # photo button handlers
@@ -86,7 +84,6 @@ def handle_photo():
         should_render = True
     else:
         print("[ERROR] Upload failed.")
-
     time.sleep(0.1)
 
 # function to return to main instructions
@@ -105,11 +102,14 @@ def handle_bluetooth_pairing():
     try:
         global should_render, current_patient_data, reset_render, render_start
         render_start = False
-        reset_render = True
         current_patient_data = None # reset patient data
 
         print("[BLUETOOTH] Discovering Bluetooth devices...")
         devices = asyncio.run(discover_devices())
+
+        reset_render = reset_display(screen)
+        render_bluetooth_instructions(screen, devices[0], devices)
+        print("??")
 
         if not devices:
             print("[BLUETOOTH] No devices found.")
@@ -120,10 +120,7 @@ def handle_bluetooth_pairing():
                                 scroll_down_callback=buttons.get_scroll_down_trigger,
                                 confirm_callback=buttons.get_confirm_trigger 
                             ))
-        current_patient_data = build_patient_json(patient_data)                   
-        should_render = True
-
-        check_render_patient_data()
+        current_patient_data = build_patient_json(patient_data)
         time.sleep(0.1)
         
     except Exception as e:
@@ -131,7 +128,11 @@ def handle_bluetooth_pairing():
 
 # function to confirm bluetooth pairing and fetch patient data
 def handle_bluetooth_confirm():
+    global should_render
+
     print("[BLUETOOTH] Confirm pressed")
+    should_render = True
+    check_render_patient_data()
 
 if __name__ == "__main__":
     try:

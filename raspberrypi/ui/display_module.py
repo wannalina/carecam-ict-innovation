@@ -33,22 +33,46 @@ START_INSTRUCTIONS_CAMERA = [
 START_INSTRUCTIONS_BLUETOOTH = [
     "To activate Bluetooth pairing,",
     "Press the 3rd button from the right."
-]   
+]
 
 def render_start_instructions(screen):
     screen.fill(BACKGROUND_COLOR)
 
     def build_instructions(start_x, start_y, text, instruction_set):
         title_text = TITLE_FONT.render(text, True, TITLE_COLOR)
-        screen.blit(title_text, (start_x, start_y))
+        screen.blit(title_text, (start_x + 40, start_y + 30))
 
-        y_offset = start_y + 50
+        y_offset = start_y + 70
         for instruction in instruction_set:
             instruction_text = TEXT_FONT.render(instruction, True, TEXT_COLOR)
-            screen.blit(instruction_text, (start_x + 15, y_offset)) 
+            screen.blit(instruction_text, (start_x, y_offset)) 
+            y_offset += 40
 
-    build_instructions(400, START_Y_TOP, "Facial recognition", START_INSTRUCTIONS_CAMERA)
-    build_instructions(400, START_Y_MIDDLE, "Bluetooth retrieval:", START_INSTRUCTIONS_CAMERA)
+    build_instructions(250, START_Y_TOP + 30, "Facial recognition", START_INSTRUCTIONS_CAMERA)
+    build_instructions(250, START_Y_MIDDLE + 30, "Bluetooth retrieval:", START_INSTRUCTIONS_BLUETOOTH)
+
+    pygame.display.flip()
+
+
+def render_bluetooth_instructions(screen, current_device, bluetooth_devices):
+    print("[DISPLAY] Rendering Bluetooth instructions...")
+    screen.fill(BACKGROUND_COLOR)
+
+    title_text = TITLE_FONT.render("Discovered Bluetooth Devices", True, TITLE_COLOR)
+    screen.blit(title_text, (START_X_LEFT + 20, START_Y_TOP + 30))
+
+    y_offset = START_Y_TOP + 50
+    for device in bluetooth_devices:
+        device_text = f"Device {device.name} found with address: {device.address}"
+        value_text = TEXT_FONT.render(device_text, True, TEXT_COLOR)
+        screen.blit(value_text, (START_X_LEFT + 20, y_offset))
+        y_offset += 28
+
+    scroll_text = TEXT_FONT.render("Press the 2nd button from the left to scroll the list", True, TEXT_COLOR)
+    screen.blit(scroll_text, (START_X_LEFT + 20, START_Y_BOTTOM))
+
+    currently_selected_text = TEXT_FONT.render(f"Selected device: {current_device.name}", True, TITLE_COLOR)
+    screen.blit(currently_selected_text, (START_X_LEFT + 20, START_Y_BOTTOM + 20))
 
     pygame.display.flip()
 
@@ -104,3 +128,9 @@ def render_patient_data(screen, patient):
     draw_card("Emergency Contact", [], START_X_RIGHT, START_Y_BOTTOM, CARD_WIDTH, CARD_HEIGHT)
 
     pygame.display.flip()
+
+
+def reset_display(screen):
+    screen.fill((0, 0, 0))
+    pygame.display.flip()
+    return False

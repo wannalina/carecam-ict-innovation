@@ -1,6 +1,7 @@
 # import libs
 from bleak import BleakScanner, BleakClient 	# bleak used for BLE / ideal for modern phones
 import asyncio
+from ui.display_module import render_bluetooth_instructions, reset_display
 
 # service UUID of the EmergencyID app
 APP_UUID = "00001234-0000-1000-8000-00805f9b34fb"
@@ -26,7 +27,7 @@ async def discover_devices():
         return []
 
 # function to select and connect device
-async def select_and_connect_device(devices, scroll_down_callback, confirm_callback):
+async def select_and_connect_device(screen, devices, scroll_down_callback, confirm_callback):
     print("Use scroll down button to select device.")
     scroll_index = 0
     last_scroll_index = -1
@@ -35,6 +36,9 @@ async def select_and_connect_device(devices, scroll_down_callback, confirm_callb
     
     selected_device = devices[scroll_index]
     print(f"[BLUETOOTH] Selected: {selected_device.name} at {selected_device.address}")
+    
+    reset_display(screen)
+    render_bluetooth_instructions(screen, selected_device, devices)
 
     while not selected:
         scroll = scroll_down_callback()
@@ -51,7 +55,7 @@ async def select_and_connect_device(devices, scroll_down_callback, confirm_callb
             print("Selected device:", selected_device)
             patient_data = await get_services_on_device(selected_device)
             return patient_data
-        await asyncio.sleep(0.2)
+        time.sleep(0.2)
     return None
 
 # function to retrieve services running on the connected device
