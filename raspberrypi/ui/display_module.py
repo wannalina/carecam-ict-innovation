@@ -7,6 +7,11 @@ TITLE_COLOR = (0, 150, 230)
 CARD_COLOR = (255, 255, 255)
 BORDER_COLOR = (220, 220, 220)
 
+# define fonts
+pygame.font.init()  # assicurati che il font system sia inizializzato  
+TITLE_FONT = pygame.font.Font(None, 30, bold=True)
+TEXT_FONT = pygame.font.Font(None, 24, bold=True)  
+
 # define component measurements
 HEADER_BLOCK_DIM = (0, 0, 800, 40)
 IMAGE_SIZE = (180, 140)
@@ -20,11 +25,36 @@ START_Y_BOTTOM = 340
 CARD_WIDTH = 370
 CARD_HEIGHT = 120
 
+START_INSTRUCTIONS_CAMERA = [
+    "To take a picture of the patient's face,", 
+    "Press the 4th button from the right."
+]
+
+START_INSTRUCTIONS_BLUETOOTH = [
+    "To activate Bluetooth pairing,",
+    "Press the 3rd button from the right."
+]   
+
+def render_start_instructions(screen):
+    screen.fill(BACKGROUND_COLOR)
+
+    def build_instructions(start_x, start_y, text, instruction_set):
+        title_text = TITLE_FONT.render(text, True, TITLE_COLOR)
+        screen.blit(title_text, (start_x, start_y))
+
+        y_offset = start_y + 50
+        for instruction in instruction_set:
+            instruction_text = TEXT_FONT.render(instruction, True, TEXT_COLOR)
+            screen.blit(instruction_text, (start_x + 15, y_offset)) 
+
+    build_instructions(400, START_Y_TOP, "Facial recognition", START_INSTRUCTIONS_CAMERA)
+    build_instructions(400, START_Y_MIDDLE, "Bluetooth retrieval:", START_INSTRUCTIONS_CAMERA)
+
+    pygame.display.flip()
+
+
 def render_patient_data(screen, patient):
     print(f"[DISPLAY] Rendering patient data: {patient}")
-    pygame.font.init()  # assicurati che il font system sia inizializzato
-    title_font = pygame.font.Font(None, 30, bold=True)
-    value_font = pygame.font.Font(None, 24, bold=True)    
 
     screen.fill(BACKGROUND_COLOR)
     pygame.draw.rect(screen, TITLE_COLOR, pygame.Rect(HEADER_BLOCK_DIM))
@@ -38,13 +68,13 @@ def render_patient_data(screen, patient):
 
         except Exception as e:
             pygame.draw.rect(screen, (200, 200, 200), (IMAGE_X, IMAGE_Y, 180, 140))
-            no_image_text = value_font.render("No Image", True, TEXT_COLOR)
+            no_image_text = TEXT_FONT.render("No Image", True, TEXT_COLOR)
             screen.blit(no_image_text, (620, 110))
 
     def draw_card(title, items, start_x, start_y, width, height):
         pygame.draw.rect(screen, CARD_COLOR, (start_x, start_y, width, height))
         pygame.draw.rect(screen, BORDER_COLOR, (start_x, start_y, width, height), 1)
-        title_text = title_font.render(title, True, TITLE_COLOR)
+        title_text = TITLE_FONT.render(title, True, TITLE_COLOR)
         screen.blit(title_text, (start_x + 15, start_y + 15))
 
         y_offset = start_y + 50
@@ -52,8 +82,8 @@ def render_patient_data(screen, patient):
             label = list(item.keys())[0]
             value = item[label]
 
-            label_text = value_font.render(label, False, TEXT_COLOR)
-            value_text = value_font.render(value, True, TEXT_COLOR)
+            label_text = TEXT_FONT.render(label, False, TEXT_COLOR)
+            value_text = TEXT_FONT.render(value, True, TEXT_COLOR)
             screen.blit(label_text, (start_x + 15, y_offset))
             screen.blit(value_text, (start_x + 160, y_offset))
             y_offset += 28

@@ -10,7 +10,7 @@ import sys
 from utils.button_module import ButtonHandler
 from services.camera_module import take_photo
 from utils.cloud_module import upload_photo, get_patient_data as get_cloud_patient_data
-from ui.display_module import render_patient_data
+from ui.display_module import render_patient_data, render_start_instructions
 from services.bluetooth_module import discover_devices, select_and_connect_device
 # from utils.cloud_module import post_to_nodered
 
@@ -23,16 +23,23 @@ pygame.display.set_caption('Patient Data')
 current_patient_data = None
 should_render = False
 reset_render = False
+render_start = True
 
 # function to check if patient data should be rendered
 def check_render_patient_data():
-    global should_render, reset_render, current_patient_data
+    global should_render, reset_render, current_patient_data, render_start
     try:
         # clear screen and reset display before rendering new data
         if reset_render:
             reset_render = False
             screen.fill((0, 0, 0))
             pygame.display.update()
+            time.sleep(0.1)
+
+        # render start instructions
+        if render_start:
+            reset_render = False
+            render_start_instructions(screen)
             time.sleep(0.1)
 
         # render patient data if exists and allowed
@@ -62,7 +69,8 @@ def build_patient_json(patient):
 
 # photo button handlers
 def handle_photo():
-    global current_patient_data, should_render, reset_render
+    global current_patient_data, should_render, reset_render, render_start
+    render_start = False
     reset_render = True
     current_patient_data = None # reset patient data
 
@@ -81,10 +89,12 @@ def handle_photo():
 
     time.sleep(0.1)
 
-
-# function to scroll up using buttons
-def handle_scroll_up():
-    print("[INFO] Scroll Up pressed.")
+# function to return to main instructions
+def handle_back_to_start():
+    global reset_render, render_start
+    print("[INFO] Back to start pressed.")
+    reset_render = True
+    render_start = True
 
 # function to scroll down using buttons
 def handle_scroll_down():
@@ -93,7 +103,8 @@ def handle_scroll_down():
 # function to select and pair bluetooth devices
 def handle_bluetooth_pairing():
     try:
-        global should_render, current_patient_data, reset_render
+        global should_render, current_patient_data, reset_render, render_start
+        render_start = False
         reset_render = True
         current_patient_data = None # reset patient data
 
@@ -127,7 +138,7 @@ if __name__ == "__main__":
         # define camera buttons
         buttons = ButtonHandler(
             photo_callback=handle_photo,
-            scroll_up_callback=handle_scroll_up,
+            back_callback=handle_back_to_start,
             scroll_down_callback=handle_scroll_down,
             bluetooth_pairing_callback=handle_bluetooth_pairing,
             bluetooth_confirm_callback=handle_bluetooth_confirm
