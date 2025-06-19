@@ -46,20 +46,18 @@ def check_render_patient_data():
 
         # render bluetooth instructions and discovered devices
         if render_bluetooth_instruct:
-            render_bluetooth_instruct = False
-            current_device = render_bluetooth_instructions(
+            render_bluetooth_instruct = render_bluetooth_instructions(
                                             screen, 
                                             devices, 
                                             scroll_down_callback=buttons.get_scroll_down_trigger,
                                             confirm_callback=buttons.get_confirm_trigger,
                                             back_callback=buttons.get_back_trigger
                                          )
-            reset_render = True
-            should_render = True
             time.sleep(0.1)
 
         # render patient data if exists and allowed
         if should_render and current_patient_data:
+            print("yes==")
             render_patient_data(screen, current_patient_data)
             # post_to_nodered(current_patient_data)
             should_render = False
@@ -81,7 +79,7 @@ def build_patient_json(patient):
         "Allergies": patient.get("Allergies", "").split(',') if patient.get("Allergies", "") else [],
         "Emergency Contact": patient.get("Emergency Contact", "").split(',') if patient.get("Emergency Contact", "") else []
     }
-    return patient
+    return patient, True
 
 # photo button handlers
 def handle_photo():
@@ -117,7 +115,7 @@ def handle_scroll_down():
 # function to select and pair bluetooth devices
 def handle_bluetooth_pairing():
     try:
-        global current_patient_data, reset_render, render_start, render_bluetooth_instruct, devices
+        global current_patient_data, reset_render, render_start, render_bluetooth_instruct, devices, should_render
         render_start = False
         current_patient_data = None # reset patient data
 
@@ -135,7 +133,8 @@ def handle_bluetooth_pairing():
                                 back_callback=buttons.get_back_trigger_ble
                             ))
 
-        if patient_data is not None:
+        if patient_data:
+            reset_render = True
             current_patient_data, should_render = build_patient_json(patient_data)
         else: 
             current_patient_data = None
@@ -148,7 +147,6 @@ def handle_bluetooth_pairing():
 # function to confirm bluetooth pairing and fetch patient data
 def handle_bluetooth_confirm():
     print("[BLUETOOTH] Confirm pressed")
-    render_bluetooth_instruct = False
 
 if __name__ == "__main__":
     try:

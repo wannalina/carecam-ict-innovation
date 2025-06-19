@@ -91,7 +91,7 @@ async def get_services_on_device(device):
                             patient_characteristics[CHARACTERISTIC_INDEX[char.uuid]] = service_data
 
                     print(f"[BLUETOOTH] Patient data: {patient_characteristics}")
-                    return patient_characteristics, True
+                    return patient_characteristics
         return None
 
     except Exception as e:

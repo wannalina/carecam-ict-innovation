@@ -88,6 +88,8 @@ def render_bluetooth_instructions(screen, devices, scroll_down_callback, confirm
 
         if back:
             selected = True
+            reset_display(screen)
+            return False
         
         if scroll:
             scroll_index = (scroll_index + 1) % len(devices)
@@ -101,6 +103,8 @@ def render_bluetooth_instructions(screen, devices, scroll_down_callback, confirm
 
         if confirm:
             selected = True
+            reset_display(screen)
+            return False
 
 
 def render_patient_data(screen, patient):
