@@ -114,6 +114,7 @@ def render_patient_data(screen, patient):
             image_path = patient.get('image')
             patient_image = pygame.image.load(image_path)
             patient_image = pygame.transform.scale(patient_image, IMAGE_SIZE)
+            patient_image = pygame.transform.rotate(patient_image, 270)
             screen.blit(patient_image, (IMAGE_X, IMAGE_Y))  
 
         except Exception as e:
