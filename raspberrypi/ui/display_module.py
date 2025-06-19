@@ -14,7 +14,7 @@ TEXT_FONT = pygame.font.Font(None, 24, bold=True)
 
 # define component measurements
 HEADER_BLOCK_DIM = (0, 0, 800, 40)
-IMAGE_SIZE = (180, 140)
+IMAGE_SIZE = (140, 180)
 IMAGE_X = 570
 IMAGE_Y = 50
 START_X_LEFT = 20
@@ -111,7 +111,7 @@ def render_patient_data(screen, patient):
 
     def display_image():
         try:
-            image_path = patient.get('image')
+            image_path = patient.get('Image')
             patient_image = pygame.image.load(image_path)
             patient_image = pygame.transform.scale(patient_image, IMAGE_SIZE)
             patient_image = pygame.transform.rotate(patient_image, 270)
@@ -142,17 +142,18 @@ def render_patient_data(screen, patient):
     # patient information
     name = {'Name': f"{patient.get('First Name', 'N/A')} {patient.get('Last Name', 'N/A')}"}
     date_of_birth = {'Date of Birth': patient.get('Date of Birth', 'N/A')}
-    sex = {'Sex': patient.get('Gender', 'N/A')}
+    sex = {'Sex': patient.get('Sex', 'N/A')}
     conditions = [{'Condition': condition} for condition in patient['Conditions']] if patient['Conditions'] else [{'Condition': 'None'}]
     allergies = [{'Allergy': allergy} for allergy in patient['Allergies']] if patient['Allergies'] else [{'Allergy': 'None'}]
     medication = [{'Medicine': medicine} for medicine in patient['Medication']] if patient['Medication'] else [{'Medicine': 'None'}]
+    emergency_contact = [{'Name': f"{patient['Emergency Contact'][0]} ({patient['Emergency Contact'][1]})"}, {'Phone Number': patient['Emergency Contact'][2]}] if patient['Emergency Contact'] else [{'Name': None}, {'Phone Number': None}]
 
     display_image()
     draw_card("Information", [name, date_of_birth, sex], START_X_LEFT, START_Y_TOP, 500, 140)
     draw_card("Conditions", conditions, START_X_LEFT, START_Y_MIDDLE, CARD_WIDTH, CARD_HEIGHT)
     draw_card("Allergies", allergies, START_X_RIGHT, START_Y_MIDDLE, CARD_WIDTH, CARD_HEIGHT)
     draw_card("Medication", medication, START_X_LEFT, START_Y_BOTTOM, CARD_WIDTH, CARD_HEIGHT)
-    draw_card("Emergency Contact", [], START_X_RIGHT, START_Y_BOTTOM, CARD_WIDTH, CARD_HEIGHT)
+    draw_card("Emergency Contact", emergency_contact, START_X_RIGHT, START_Y_BOTTOM, CARD_WIDTH, CARD_HEIGHT)
 
     pygame.display.flip()
 

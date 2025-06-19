@@ -71,7 +71,6 @@ class ButtonHandler:
 
     def handle_bluetooth_press(self):
         self.led_bluetooth.blink(on_time=0.2, off_time=0.2, n=2)
-
         if self.bluetooth_button_index % 2 != 0 and self.bluetooth_pairing_callback:
             print("[BLUETOOTH] Start device discovery...")
             self.led_bluetooth.blink(on_time=0.1, off_time=0.1, n=1)
@@ -79,8 +78,8 @@ class ButtonHandler:
             thread.start()
         if self.bluetooth_button_index % 2 == 0 and self.bluetooth_confirm_callback:
             print("[BLUETOOTH] Confirm device pairing...")
-            self._confirm_triggered = True
             self._confirm_triggered_ble = True
+            self._confirm_triggered = True
             self.led_bluetooth.blink(on_time=0.2, off_time=0.2, n=2)
             self.bluetooth_confirm_callback()
         self.bluetooth_button_index += 1

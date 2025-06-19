@@ -21,7 +21,7 @@ def upload_photo(photo_path):
                 # update patient_data.json with image path
                 with open(PATIENT_DATA_FILE, "r") as file: 
                         data = json.load(file)
-                data["image"] = photo_path
+                data["Image"] = photo_path
                 
                 with open(PATIENT_DATA_FILE, "w") as file:
                         json.dump(data, file, indent=4)

@@ -75,10 +75,11 @@ def build_patient_json(patient):
         "Last Name": patient.get("Last Name", ""),
         "Image": "",  # placeholder
         "Date of Birth": patient.get("Date of Birth", ""),
-        "Gender": patient.get("Sex", ""),
-        "Conditions": [],
-        "Medication": patient.get("Medication", "").split(';') if patient.get("Medication", "") else [],
-        "Allergies": patient.get("Allergies", "").split(';') if patient.get("Allergies", "") else []
+        "Sex": patient.get("Sex", ""),
+        "Conditions": patient.get("Conditions", "").split(',') if patient.get("Conditions", "") else [],
+        "Medication": patient.get("Medication", "").split(',') if patient.get("Medication", "") else [],
+        "Allergies": patient.get("Allergies", "").split(',') if patient.get("Allergies", "") else [],
+        "Emergency Contact": patient.get("Emergency Contact", "").split(',') if patient.get("Emergency Contact", "") else []
     }
     return patient
 
@@ -116,7 +117,7 @@ def handle_scroll_down():
 # function to select and pair bluetooth devices
 def handle_bluetooth_pairing():
     try:
-        global should_render, current_patient_data, reset_render, render_start, render_bluetooth_instruct, devices
+        global current_patient_data, reset_render, render_start, render_bluetooth_instruct, devices
         render_start = False
         current_patient_data = None # reset patient data
 
@@ -135,7 +136,7 @@ def handle_bluetooth_pairing():
                             ))
 
         if patient_data is not None:
-            current_patient_data = build_patient_json(patient_data)
+            current_patient_data, should_render = build_patient_json(patient_data)
         else: 
             current_patient_data = None
 
@@ -147,7 +148,7 @@ def handle_bluetooth_pairing():
 # function to confirm bluetooth pairing and fetch patient data
 def handle_bluetooth_confirm():
     print("[BLUETOOTH] Confirm pressed")
-    should_render = True
+    render_bluetooth_instruct = False
 
 if __name__ == "__main__":
     try:

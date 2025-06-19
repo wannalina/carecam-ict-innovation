@@ -10,9 +10,11 @@ CHARACTERISTIC_INDEX = {
                             "00002a90-0000-1000-8000-00805f9b34fb": "Last Name", 
                             "00002a85-0000-1000-8000-00805f9b34fb": "Date of Birth",
                             "00002a8c-0000-1000-8000-00805f9b34fb": "Sex",
+                            "00002bc6-0000-1000-8000-00805f9b34fb": "Conditions",
                             "00012a1e-0000-1000-8000-00805f9b34fb": "Allergies",
                             "00002bff-0000-1020-8000-00805f9b34fb": "Medication",
-                            "00112b35-0000-1000-8000-00805f9b34fb": "Cholesterol Level"
+                            "00112b35-0000-1000-8000-00805f9b34fb": "Cholesterol Level",
+                            "00002b2d-0000-1000-8000-00805f9b34fb": "Emergency Contact"
                         }
 
 # function to discover bluetooth devices
@@ -89,7 +91,7 @@ async def get_services_on_device(device):
                             patient_characteristics[CHARACTERISTIC_INDEX[char.uuid]] = service_data
 
                     print(f"[BLUETOOTH] Patient data: {patient_characteristics}")
-                    return patient_characteristics
+                    return patient_characteristics, True
         return None
 
     except Exception as e:
