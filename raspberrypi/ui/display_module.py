@@ -1,4 +1,5 @@
 import pygame
+import time
 
 # define colors
 BACKGROUND_COLOR = (245, 245, 245)
@@ -56,7 +57,7 @@ def render_start_instructions(screen):
     pygame.display.flip()
 
 
-def render_bluetooth_instructions(screen, devices, scroll_down_callback, confirm_callback, back_callback):
+def render_bluetooth_instructions(screen, devices, scroll_down_callback, confirm_callback):
     selected = False
     scroll_index = 0
     last_scroll_index = -1
@@ -84,12 +85,6 @@ def render_bluetooth_instructions(screen, devices, scroll_down_callback, confirm
     while not selected:
         scroll = scroll_down_callback()
         confirm = confirm_callback()
-        back = back_callback()
-
-        if back:
-            selected = True
-            reset_display(screen)
-            return False
         
         if scroll:
             scroll_index = (scroll_index + 1) % len(devices)
@@ -105,6 +100,9 @@ def render_bluetooth_instructions(screen, devices, scroll_down_callback, confirm
             selected = True
             reset_display(screen)
             return False
+
+        time.sleep(0.1)
+        return
 
 
 def render_patient_data(screen, patient):

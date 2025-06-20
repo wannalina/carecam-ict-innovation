@@ -20,21 +20,25 @@ CHARACTERISTIC_INDEX = {
 # function to discover bluetooth devices
 async def discover_devices():
     try:
+        devices_eisi = []
         devices = await BleakScanner.discover()
         for device in devices:
-            print(f"[BLUETOOTH] Device {device.name} found with address: {device.address}")
-        return devices, True
+            if "Device" in device.name:
+                devices_eisi.append(device)
+                print(f"[BLUETOOTH] Device {device.name} found with address: {device.address}")
+        return devices_eisi, True
     except Exception as e:
         print(f"Error in device discovery: {e}")
         return [], False
 
 # function to select and connect device
-async def select_and_connect_device(devices, scroll_down_callback, confirm_callback, back_callback):
+async def select_and_connect_device(devices, scroll_down_callback, confirm_callback):
     print("Use scroll down button to select device.")
     scroll_index = 0
     last_scroll_index = -1
     selected = False
     selected_device = None
+    patient_data = None
     
     selected_device = devices[scroll_index]
     print(f"[BLUETOOTH] Selected: {selected_device.name} at {selected_device.address}")
@@ -42,12 +46,6 @@ async def select_and_connect_device(devices, scroll_down_callback, confirm_callb
     while not selected:
         scroll = scroll_down_callback()
         confirm = confirm_callback()
-        back = back_callback()
-        
-        if back:
-            selected = True
-            selected_device = None
-            return None, False
 
         if scroll:
             scroll_index = (scroll_index + 1) % len(devices)
@@ -61,9 +59,7 @@ async def select_and_connect_device(devices, scroll_down_callback, confirm_callb
             print("Selected device:", selected_device)
             patient_data = await get_services_on_device(selected_device)
             return patient_data, False
-
-    time.sleep(0.2)
-    return None, False
+    return patient_data, False
 
 # function to retrieve services running on the connected device
 async def get_services_on_device(device):

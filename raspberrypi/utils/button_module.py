@@ -27,8 +27,6 @@ class ButtonHandler:
 
         # state flags
         self.bluetooth_button_index = 1
-        self._back_triggered = False
-        self._back_triggered_ble = False
         self._scroll_down_triggered = False
         self._scroll_down_triggered_ble = False
         self._confirm_triggered = False
@@ -48,9 +46,6 @@ class ButtonHandler:
 
     def handle_back_press(self):
         print("[Button] Back to start")
-        self._back_triggered = True
-        self._back_triggered_ble = True
-        self.bluetooth_button_index = 1
         if self.back_callback:
             self.back_callback()
 
@@ -71,11 +66,17 @@ class ButtonHandler:
 
     def handle_bluetooth_press(self):
         self.led_bluetooth.blink(on_time=0.2, off_time=0.2, n=2)
-        if self.bluetooth_button_index % 2 != 0 and self.bluetooth_pairing_callback:
+        if self.bluetooth_button_index == 1 and self.bluetooth_pairing_callback:
             print("[BLUETOOTH] Start device discovery...")
             self.led_bluetooth.blink(on_time=0.1, off_time=0.1, n=1)
             thread = threading.Thread(target=self.bluetooth_pairing_callback)
             thread.start()
+
+        if self.bluetooth_button_index != 1 and self.bluetooth_button_index % 2 != 0 and self.bluetooth_pairing_callback:
+            print("[BLUETOOTH] Start device discovery...")
+            self.led_bluetooth.blink(on_time=0.1, off_time=0.1, n=1)
+            self.bluetooth_pairing_callback()
+
         if self.bluetooth_button_index % 2 == 0 and self.bluetooth_confirm_callback:
             print("[BLUETOOTH] Confirm device pairing...")
             self._confirm_triggered_ble = True
@@ -83,16 +84,6 @@ class ButtonHandler:
             self.led_bluetooth.blink(on_time=0.2, off_time=0.2, n=2)
             self.bluetooth_confirm_callback()
         self.bluetooth_button_index += 1
-
-    def get_back_trigger(self):
-        triggered = self._back_triggered
-        self._back_triggered = False
-        return triggered
-
-    def get_back_trigger_ble(self):
-        triggered = self._back_triggered_ble
-        self._back_triggered_ble = False
-        return triggered
 
     def get_scroll_down_trigger(self):
         triggered = self._scroll_down_triggered
