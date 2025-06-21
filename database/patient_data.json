@@ -1,66 +1,23 @@
 {
-    "patients": [
-        {
-            "name": "Alice Johnson",
-            "image": "",
-            "dob": "1985-04-12",
-            "gender": "Female",
-            "medical_conditions": [
-                "Type 2 Diabetes",
-                "Hypertension"
-            ],
-            "medications": [
-                {
-                    "name": "Metformin",
-                    "dosage": "500mg",
-                    "frequency": "Twice daily"
-                },
-                {
-                    "name": "Lisinopril",
-                    "dosage": "10mg",
-                    "frequency": "Once daily"
-                }
-            ],
-            "critical_info": {
-                "allergies": ["Penicillin"],
-                "blood_type": "O+",
-                "emergency_contact": {
-                    "name": "Robert Johnson",
-                    "relation": "Husband",
-                    "phone": "555-123-4567"
-                }
-            }
-        },
-        {
-            "name": "Michael Smith",
-            "image": "",
-            "dob": "1972-09-30",
-            "gender": "Male",
-            "medical_conditions": [
-                "Asthma",
-                "High Cholesterol"
-            ],
-            "medications": [
-                {
-                    "name": "Albuterol Inhaler",
-                    "dosage": "2 puffs",
-                    "frequency": "As needed"
-                },
-                {
-                    "name": "Atorvastatin",
-                    "dosage": "20mg",
-                    "frequency": "Once daily"
-                }
-            ],
-            "critical_info": {
-                "allergies": [],
-                "blood_type": "A-",
-                "emergency_contact": {
-                    "name": "Laura Smith",
-                    "relation": "Wife",
-                    "phone": "555-987-6543"
-                }
-            }
-        }
+    "First Name": "Paolo",
+    "Last Name": "Bormolini",
+    "Image": "/photos/20250620_220856.jpg",
+    "Date of Birth": "18/06/2002",
+    "Sex": "Male",
+    "Conditions": [
+        "Type 2 Diabetes",
+        "Hypertension"
+    ],
+    "Allergies": [
+        "Peanuts"
+    ],
+    "Medication": [
+        "Metformin 500mg",
+        "Lisinopril 10mg"
+    ],
+    "Emergency Contact": [
+        "Mattia Bormolini",
+        "Brother",
+        "+456 77 890 7890"
     ]
-}  
+}
