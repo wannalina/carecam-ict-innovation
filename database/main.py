@@ -26,7 +26,7 @@ def facial_recognition_route():
                 patient_data = json.load(f)
 
             # insert image into entry image field
-            patient_data['patients'][0]['image'] = image
+            patient_data[0]['image'] = image
 
             # return patient data to raspberrypi
             return jsonify({'message': patient_data['patients'][0]}), 200
